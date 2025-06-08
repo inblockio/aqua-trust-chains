@@ -1,0 +1,26 @@
+{
+  "name": "aqua-trust-chains",
+  "version": "1.0.0",
+  "description": "Frontend for generating AQUA Protocol off-chain trust chains",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "validate": "node scripts/validate-chain.js",
+    "server": "node server.js",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "aqua-js-sdk": "git+https://github.com/inblockio/aqua-js-sdk.git",
+    "ethers": "^6.8.0",
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "vite": "^4.4.0",
+    "@vitejs/plugin-react": "^4.0.3",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "type": "module"
+}

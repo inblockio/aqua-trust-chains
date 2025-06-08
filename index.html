@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AQUA Trust Chains Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #34495e;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .output {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            border-left: 4px solid #3498db;
+        }
+        .error {
+            border-left-color: #e74c3c;
+            background-color: #fdf2f2;
+        }
+        .success {
+            border-left-color: #27ae60;
+            background-color: #f0f9f4;
+        }
+        pre {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-size: 12px;
+        }
+        .tab-container {
+            margin-bottom: 20px;
+        }
+        .tab-buttons {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+        }
+        .tab-button {
+            padding: 10px 20px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+        }
+        .tab-button.active {
+            border-bottom-color: #3498db;
+            color: #3498db;
+        }
+        .tab-content {
+            display: none;
+            padding: 20px 0;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .chain-display {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .attestation-item {
+            margin: 10px 0;
+            padding: 10px;
+            border-left: 3px solid #3498db;
+            background-color: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>AQUA Protocol Trust Chains Generator</h1>
+        
+        <div class="tab-container">
+            <div class="tab-buttons">
+                <button class="tab-button active" onclick="showTab('root')">Root Trust Anchor</button>
+                <button class="tab-button" onclick="showTab('intermediate')">Intermediate Delegate</button>
+                <button class="tab-button" onclick="showTab('end-entity')">End Entity</button>
+                <button class="tab-button" onclick="showTab('revocation')">Revocation</button>
+                <button class="tab-button" onclick="showTab('validate')">Validate Chain</button>
+            </div>
+
+            <!-- Root Trust Anchor Tab -->
+            <div id="root" class="tab-content active">
+                <h2>Create Root Trust Anchor</h2>
+                <form id="rootForm">
+                    <div class="form-group">
+                        <label for="rootWallet">Root Wallet Address:</label>
+                        <input type="text" id="rootWallet" placeholder="0x..." required>
+                    </div>
+                    <div class="form-group">
+                        <label for="rootPrivateKey">Private Key (for signing):</label>
+                        <input type="password" id="rootPrivateKey" placeholder="Private key for EIP-191 signature" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="rootDomain">DNS Domain:</label>
+                        <input type="text" id="rootDomain" placeholder="example.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="rootValidityStart">Valid From:</label>
+                        <input type="datetime-local" id="rootValidityStart" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="rootValidityEnd">Valid Until:</label>
+                        <input type="datetime-local" id="rootValidityEnd" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Capabilities:</label>
+                        <div style="display: flex; gap: 15px; margin-top: 5px;">
+                            <label style="display: flex; align-items: center; font-weight: normal;">
+                                <input type="checkbox" id="rootDelegation" checked style="margin-right: 5px; width: auto;">
+                                Delegation
+                            </label>
+                            <label style="display: flex; align-items: center; font-weight: normal;">
+                                <input type="checkbox" id="rootAuthentication" checked style="margin-right: 5px; width: auto;">
+                                Authentication
+                            </label>
+                            <label style="display: flex; align-items: center; font-weight: normal;">
+                                <input type="checkbox" id="rootSigning" checked style="margin-right: 5px; width: auto;">
+                                Signing
+                            </label>
+                        </div>
+                    </div>
+                    <button type="submit">Generate Root Trust Anchor</button>
+                </form>
+            </div>
+
+            <!-- Intermediate Delegate Tab -->
+            <div id="intermediate" class="tab-content">
+                <h2>Create Intermediate Delegate</h2>
+                <form id="intermediateForm">
+                    <div class="form-group">
+                        <label for="issuerWallet">Issuer Wallet Address:</label>
+                        <input type="text" id="issuerWallet" placeholder="0x..." required>
+                    </div>
+                    <div class="form-group">
+                        <label for="issuerPrivateKey">Issuer Private Key:</label>
+                        <input type="password" id="issuerPrivateKey" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="subjectWallet">Subject Wallet Address:</label>
+                        <input type="text" id="subjectWallet" placeholder="0x..." required>
+                    </div>
+                    <div class="form-group">
+                        <label for="issuerAttestationHash">Issuer Attestation Hash:</label>
+                        <input type="text" id="issuerAttestationHash" placeholder="Previous attestation hash" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="intermediateValidityStart">Valid From:</label>
+                        <input type="datetime-local" id="intermediateValidityStart" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="intermediateValidityEnd">Valid Until:</label>
+                        <input type="datetime-local" id="intermediateValidityEnd" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Capabilities:</label>
+                        <div style="display: flex; gap: 15px; margin-top: 5px;">
+                            <label style="display: flex; align-items: center; font-weight: normal;">
+                                <input type="checkbox" id="intermediateDelegation" checked style="margin-right: 5px; width: auto;">
+                                Delegation
+                            </label>
+                            <label style="display: flex; align-items: center; font-weight: normal;">
+                                <input type="checkbox" id="intermediateAuthentication" checked style="margin-right: 5px; width: auto;">
+                                Authentication
+                            </label>
+                            <label style="display: flex; align-items: center; font-weight: normal;">
+                                <input type="checkbox" id="intermediateSigning" checked style="margin-right: 5px; width: auto;">
+                                Signing
+                            </label>
+                        </div>
+                    </div>
+                    <button type="submit">Generate Intermediate Delegate</button>
+                </form>
+            </div>
+
+            <!-- End Entity Tab -->
+            <div id="end-entity" class="tab-content">
+                <h2>Create End Entity</h2>
+                <form id="endEntityForm">
+                    <div class="form-group">
+                        <label for="endIssuerWallet">Issuer Wallet Address:</label>
+                        <input type="text" id="endIssuerWallet" placeholder="0x..." required>
+                    </div>
+                    <div class="form-group">
+                        <label for="endIssuerPrivateKey">Issuer Private Key:</label>
+                        <input type="password" id="endIssuerPrivateKey" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="endSubjectWallet">Subject Wallet Address:</label>
+                        <input type="text" id="endSubjectWallet" placeholder="0x..." required>
+                    </div>
+                    <div class="form-group">
+                        <label for="endIssuerAttestationHash">Issuer Attestation Hash:</label>
+                        <input type="text" id="endIssuerAttestationHash" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="endValidityStart">Valid From:</label>
+                        <input type="datetime-local" id="endValidityStart" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="endValidityEnd">Valid Until:</label>
+                        <input type="datetime-local" id="endValidityEnd" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Capabilities:</label>
+                        <div style="display: flex; gap: 15px; margin-top: 5px;">
+                            <label style="display: flex; align-items: center; font-weight: normal;">
+                                <input type="checkbox" id="endDelegation" style="margin-right: 5px; width: auto;">
+                                Delegation
+                            </label>
+                            <label style="display: flex; align-items: center; font-weight: normal;">
+                                <input type="checkbox" id="endAuthentication" checked style="margin-right: 5px; width: auto;">
+                                Authentication
+                            </label>
+                            <label style="display: flex; align-items: center; font-weight: normal;">
+                                <input type="checkbox" id="endSigning" checked style="margin-right: 5px; width: auto;">
+                                Signing
+                            </label>
+                        </div>
+                    </div>
+                    <button type="submit">Generate End Entity</button>
+                </form>
+            </div>
+
+            <!-- Revocation Tab -->
+            <div id="revocation" class="tab-content">
+                <h2>Create Revocation</h2>
+                <form id="revocationForm">
+                    <div class="form-group">
+                        <label for="revokerWallet">Revoker Wallet Address:</label>
+                        <input type="text" id="revokerWallet" placeholder="0x..." required>
+                    </div>
+                    <div class="form-group">
+                        <label for="revokerPrivateKey">Revoker Private Key:</label>
+                        <input type="password" id="revokerPrivateKey" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="revokedHash">Revoked Attestation Hash:</label>
+                        <input type="text" id="revokedHash" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="revocationReason">Revocation Reason:</label>
+                        <select id="revocationReason">
+                            <option value="keyCompromise">Key Compromise</option>
+                            <option value="policyViolation">Policy Violation</option>
+                            <option value="superseded">Superseded</option>
+                            <option value="cessationOfOperation">Cessation of Operation</option>
+                        </select>
+                    </div>
+                    <button type="submit">Generate Revocation</button>
+                </form>
+            </div>
+
+            <!-- Validate Chain Tab -->
+            <div id="validate" class="tab-content">
+                <h2>Validate Trust Chain</h2>
+                <form id="validateForm">
+                    <div class="form-group">
+                        <label for="chainFile">Chain File Path:</label>
+                        <input type="text" id="chainFile" placeholder="./output/chain.aqua.json" required>
+                    </div>
+                    <button type="submit">Validate Chain</button>
+                    <button type="button" onclick="validateAllChains()">Validate All Generated Chains</button>
+                </form>
+                
+                <h3>DNS Registry Testing</h3>
+                <form id="dnsTestForm">
+                    <div class="form-group">
+                        <label for="testDomain">Test Domain:</label>
+                        <input type="text" id="testDomain" value="inblock.io" placeholder="example.com">
+                    </div>
+                    <button type="button" onclick="testDNSRegistry()">Test DNS Registry</button>
+                    <button type="button" onclick="showDNSCommands()">Show DNS Commands</button>
+                </form>
+            </div>
+        </div>
+
+        <div id="output" class="output" style="display: none;">
+            <h3>Output:</h3>
+            <div id="outputContent"></div>
+        </div>
+
+        <div id="chainDisplay" class="chain-display" style="display: none;">
+            <h3>Generated Trust Chain:</h3>
+            <div id="chainContent"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+    <script src="js/dns-registry.js"></script>
+    <script src="js/trust-chain-generator.js"></script>
+</body>
+</html>

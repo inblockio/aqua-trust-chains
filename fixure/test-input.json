@@ -1,0 +1,11 @@
+{
+  "formType": "root_trust_anchor",
+  "rootWallet": "0x4a79b0d4b8feda7af5902da2d15d73a7e5fdefd4",
+  "rootPrivateKey": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+  "rootDomain": "inblock.io",
+  "rootValidityStart": "2025-06-10T12:00",
+  "rootValidityEnd": "2026-06-10T12:00",
+  "rootDelegation": true,
+  "rootAuthentication": true,
+  "rootSigning": true
+}
